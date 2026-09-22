@@ -12,6 +12,7 @@ const emptyForm = {
     currency: 'USD',
     payment_type: 'full',
     down_payment: '',
+    emi_months: '',
     due_date: '',
     recipient_name: '',
     recipient_emails: [''],
@@ -156,13 +157,30 @@ const DashboardPage = () => {
         const amount = Number(form.amount);
         const emails = form.recipient_emails.map((item) => item.trim()).filter(Boolean);
         const chats = form.telegram_chat_ids.map((item) => item.trim()).filter(Boolean);
-        if (!form.title.trim() || !amount || amount <= 0 || !/^[A-Z]{3}$/.test(form.currency) || !form.due_date || !form.recipient_name.trim() || !emails.length || (form.notification_channels.includes('telegram') && !chats.length) || !form.notification_channels.length) {
-            setNotice({ type: 'error', text: 'Complete the required fields, add an email, and provide a Telegram chat ID when Telegram is selected.' });
+        const hasEmailChannel = form.notification_channels.includes('email');
+        const hasTelegramChannel = form.notification_channels.includes('telegram');
+
+        // Validate required fields
+        if (!form.title.trim() || !amount || amount <= 0 || !/^[A-Z]{3}$/.test(form.currency) || !form.due_date || !form.recipient_name.trim() || !form.notification_channels.length) {
+            setNotice({ type: 'error', text: 'Complete all required fields and select at least one notification channel.' });
+            return;
+        }
+
+        // Validate email is required when email channel is selected
+        if (hasEmailChannel && !emails.length) {
+            setNotice({ type: 'error', text: 'At least one email address is required when Email notification is selected.' });
+            return;
+        }
+
+        // Validate telegram chat IDs are required when telegram channel is selected
+        if (hasTelegramChannel && !chats.length) {
+            setNotice({ type: 'error', text: 'At least one Telegram chat ID is required when Telegram notification is selected.' });
             return;
         }
         setIsSubmitting(true);
         setNotice({ type: '', text: '' });
         const downPayment = Number(form.down_payment || 0);
+        const emiMonths = Number(form.emi_months || 0);
         if (
             form.payment_type === 'emi' &&
             (!downPayment || downPayment <= 0 || downPayment >= amount)
@@ -170,6 +188,16 @@ const DashboardPage = () => {
             setNotice({
                 type: 'error',
                 text: 'For EMI payments, the down payment must be greater than 0 and less than the total amount.',
+            });
+            setIsSubmitting(false);
+            return;
+        }
+
+        // Validate EMI months
+        if (form.payment_type === 'emi' && (!emiMonths || emiMonths < 1)) {
+            setNotice({
+                type: 'error',
+                text: 'For EMI payments, the number of months must be at least 1.',
             });
             setIsSubmitting(false);
             return;
@@ -183,6 +211,7 @@ const DashboardPage = () => {
                 currency: form.currency,
                 payment_type: form.payment_type,
                 down_payment: form.payment_type === 'emi' ? downPayment : 0,
+                emi_months: form.payment_type === 'emi' ? emiMonths : 0,
                 due_date: new Date(form.due_date).toISOString(),
                 recipient_name: form.recipient_name.trim(),
                 recipient_emails: emails,
@@ -592,7 +621,7 @@ const DashboardPage = () => {
                                         <p className="-mt-1 -text-sm -text-[#737373]">Create a reminder with multiple recipients and notification channels.</p>
                                     </div>
 
-                                    <form className="-grid -grid-cols-1 -gap-5 md:-grid-cols-2" onSubmit={submitPayment}>
+                                    <form className="-grid -grid-cols-1 -gap-5 md:-grid-cols-2">
                                         {[
                                             ['title', 'Title *', 'text', 'Hosting invoice'],
                                             ['description', 'Description', 'textarea', 'Monthly hosting'],
@@ -689,39 +718,42 @@ const DashboardPage = () => {
                                             </div>
                                         )}
 
-                                        <div className="md:-col-span-2">
-                                            <label className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]">Recipient emails *</label>
-                                            {form.recipient_emails.map((email, index) => (
-                                                <div className="-mb-2 -flex -gap-2" key={`email-${index}`}>
-                                                    <input
-                                                        type="email"
-                                                        value={email}
-                                                        onChange={(event) => changeArray('recipient_emails', index, event.target.value)}
-                                                        placeholder="finance@example.com"
-                                                        required={index === 0}
-                                                        className="-h-10 -min-w-0 -flex-1 -rounded-lg -border -border-[#d9d9d9] -px-3 -text-sm focus:-border-[#888] -outline-none"
-                                                    />
-                                                    <div type="button" onClick={() => removeArrayItem('recipient_emails', index)} className="-rounded-lg -px-3 -text-xs -font-medium -text-[#777] hover:-bg-[#f0f0f0]">Remove</div>
-                                                </div>
-                                            ))}
-                                            <div type="button" onClick={() => addArrayItem('recipient_emails')} className="-mt-1 -text-xs -font-semibold -text-[#555] hover:-text-black">+ Add email</div>
-                                        </div>
+                                        {/* EMI Months Field (shown when payment_type is 'emi') */}
+                                        {form.payment_type === 'emi' && (
+                                            <div>
+                                                <label
+                                                    htmlFor="payment-emi_months"
+                                                    className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]"
+                                                >
+                                                    Number of months (EMI) *
+                                                </label>
 
-                                        <div className="md:-col-span-2">
-                                            <label className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]">Telegram chat IDs</label>
-                                            {form.telegram_chat_ids.map((chat, index) => (
-                                                <div className="-mb-2 -flex -gap-2" key={`chat-${index}`}>
-                                                    <input
-                                                        value={chat}
-                                                        onChange={(event) => changeArray('telegram_chat_ids', index, event.target.value)}
-                                                        placeholder="123456789"
-                                                        className="-h-10 -min-w-0 -flex-1 -rounded-lg -border -border-[#d9d9d9] -px-3 -text-sm focus:-border-[#888] -outline-none"
-                                                    />
-                                                    <div type="button" onClick={() => removeArrayItem('telegram_chat_ids', index)} className="-rounded-lg -px-3 -text-xs -font-medium -text-[#777] hover:-bg-[#f0f0f0]">Remove</div>
-                                                </div>
-                                            ))}
-                                            <div type="button" onClick={() => addArrayItem('telegram_chat_ids')} className="-mt-1 -text-xs -font-semibold -text-[#555] hover:-text-black">+ Add chat ID</div>
-                                        </div>
+                                                <input
+                                                    id="payment-emi_months"
+                                                    name="emi_months"
+                                                    type="number"
+                                                    min="1"
+                                                    step="1"
+                                                    value={form.emi_months}
+                                                    onChange={changeField}
+                                                    placeholder="e.g., 6, 12, 24"
+                                                    required
+                                                    className="-h-10 -w-full -rounded-lg -border -border-[#d9d9d9] -bg-white -px-3 -text-sm -outline-none focus:-border-[#888] focus:-ring-2 focus:-ring-[#000]/5"
+                                                />
+
+                                                {form.amount && form.down_payment && form.emi_months && (
+                                                    <p className="-mt-1 -text-xs -text-[#8e8e8e]">
+                                                        Monthly EMI: {formatAmount(
+                                                            Math.max(
+                                                                0,
+                                                                (Number(form.amount) - Number(form.down_payment)) / Number(form.emi_months)
+                                                            ),
+                                                            form.currency
+                                                        )} / month
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
 
                                         <div className="md:-col-span-2">
                                             <label className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]">Notification channels *</label>
@@ -741,9 +773,72 @@ const DashboardPage = () => {
                                             </div>
                                         </div>
 
+                                        {form.notification_channels.includes('email') && (
+                                            <div className="md:-col-span-2">
+                                                <label className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]">Recipient emails *</label>
+                                                {form.recipient_emails.map((email, index) => (
+                                                    <div className="-mb-2 -flex -gap-2" key={`email-${index}`}>
+                                                        <input
+                                                            type="email"
+                                                            value={email}
+                                                            onChange={(event) => changeArray('recipient_emails', index, event.target.value)}
+                                                            placeholder="finance@example.com"
+                                                            required={index === 0}
+                                                            className="-h-10 -min-w-0 -flex-1 -rounded-lg -border -border-[#d9d9d9] -px-3 -text-sm focus:-border-[#888] -outline-none"
+                                                        />
+                                                        <div
+                                                            type="button"
+                                                            onClick={() => removeArrayItem('recipient_emails', index)}
+                                                            className="-rounded-lg -flex -justify-center -items-center -px-3 -text-xs -font-medium -text-[#777] hover:-bg-[#f0f0f0]"
+                                                        >
+                                                            Remove
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div
+                                                    type="button"
+                                                    onClick={() => addArrayItem('recipient_emails')}
+                                                    className="-mt-1 -text-xs -font-semibold -text-[#555] hover:-text-black"
+                                                >
+                                                    + Add email
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {form.notification_channels.includes('telegram') && (
+                                            <div className="md:-col-span-2">
+                                                <label className="-mb-1.5 -block -text-xs -font-semibold -text-[#555]">Telegram chat IDs *</label>
+                                                {form.telegram_chat_ids.map((chat, index) => (
+                                                    <div className="-mb-2 -flex -gap-2" key={`chat-${index}`}>
+                                                        <input
+                                                            value={chat}
+                                                            onChange={(event) => changeArray('telegram_chat_ids', index, event.target.value)}
+                                                            placeholder="123456789"
+                                                            required={index === 0}
+                                                            className="-h-10 -min-w-0 -flex-1 -rounded-lg -border -border-[#d9d9d9] -px-3 -text-sm focus:-border-[#888] -outline-none"
+                                                        />
+                                                        <div
+                                                            type="button"
+                                                            onClick={() => removeArrayItem('telegram_chat_ids', index)}
+                                                            className="-rounded-lg -flex -justify-center -items-center -px-3 -text-xs -font-medium -text-[#777] hover:-bg-[#f0f0f0]"
+                                                        >
+                                                            Remove
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div
+                                                    type="button"
+                                                    onClick={() => addArrayItem('telegram_chat_ids')}
+                                                    className="-mt-1 -text-xs -font-semibold -text-[#555] hover:-text-black"
+                                                >
+                                                    + Add chat ID
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className="-flex -justify-end -gap-2 md:-col-span-2">
                                             <div type="button" onClick={() => setForm(emptyForm)} className="-rounded-lg -border -border-[#d9d9d9] -px-4 -py-2 -text-sm -font-medium hover:-bg-[#f5f5f5]">Clear</div>
-                                            <div type="submit" disabled={isSubmitting} className="-rounded-lg -bg-[#202123] -px-4 -py-2 -text-sm -font-medium -text-white hover:-bg-[#000] disabled:-opacity-50">
+                                            <div type="submit" disabled={isSubmitting} onClick={submitPayment} className="-rounded-lg -bg-[#202123] -px-4 -py-2 -text-sm -font-medium -text-white hover:-bg-[#000] disabled:-opacity-50">
                                                 {isSubmitting ? 'Saving...' : 'Save payment'}
                                             </div>
                                         </div>
