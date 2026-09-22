@@ -1,4 +1,3 @@
-import React from 'react';
 import './loadingScreen.scss';
 
 const LoadingScreen = ({ message = 'Loading...', fullScreen = false }) => {

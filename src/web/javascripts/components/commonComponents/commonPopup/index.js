@@ -1,5 +1,4 @@
 // Common Popup Component
-import React from 'react';
 import {
   Dialog,
   DialogTitle,

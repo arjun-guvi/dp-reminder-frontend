@@ -1,5 +1,4 @@
 // Settings Page
-import React from 'react';
 import {
   Box,
   Typography,

@@ -1,5 +1,4 @@
 // Admin Dashboard Page
-import React from 'react';
 import {
   Box,
   Typography,

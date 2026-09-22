@@ -1,5 +1,4 @@
 // No Content Card Component
-import React from 'react';
 import {
   Box,
   Typography,

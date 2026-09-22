@@ -1,5 +1,5 @@
 // Search Bar Component
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TextField } from '@mui/material';
 import './searchBar.scss';
 

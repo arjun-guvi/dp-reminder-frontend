@@ -1,5 +1,4 @@
 // Page Header Component
-import React from 'react';
 import {
   Typography,
   Breadcrumbs,

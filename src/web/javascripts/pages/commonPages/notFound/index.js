@@ -1,5 +1,4 @@
 // Not Found Page (404)
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,

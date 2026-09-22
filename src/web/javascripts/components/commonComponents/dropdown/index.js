@@ -1,5 +1,4 @@
 // Dropdown Component
-import React from 'react';
 import {
   MenuItem,
   FormControl,

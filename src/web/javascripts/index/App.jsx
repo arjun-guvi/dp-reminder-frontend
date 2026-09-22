@@ -1,7 +1,6 @@
 // Main App Component with Routing
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Box, Container } from '@mui/material';
 
 // Components
 import LoadingScreen from '../components/commonComponents/loadingScreen';

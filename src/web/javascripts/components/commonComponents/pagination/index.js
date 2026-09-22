@@ -1,11 +1,7 @@
 // Pagination Component
-import React from 'react';
 import {
   TablePagination,
   Typography,
-  Stack,
-  MenuItem,
-  Select,
 } from '@mui/material';
 import './pagination.scss';
 
