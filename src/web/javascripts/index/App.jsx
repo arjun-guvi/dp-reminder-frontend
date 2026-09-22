@@ -15,15 +15,13 @@ const Signup = lazy(() => import('../pages/onboardingPages/signup'));
 const ForgotPassword = lazy(() => import('../pages/onboardingPages/forgotPassword'));
 const Dashboard = lazy(() => import('../pages/app/dashboard'));
 const AdminDashboard = lazy(() => import('../pages/adminWeb'));
-const StudentDashboard = lazy(() => import('../pages/studentWeb'));
+// const StudentDashboard = lazy(() => import('../pages/studentWeb'));
 const Settings = lazy(() => import('../pages/commonPages/settings'));
 const NotFound = lazy(() => import('../pages/commonPages/notFound'));
 
 const App = () => {
   return (
     <ErrorBoundary>
-      <Box className="app-container">
-        <Container maxWidth={false} disableGutters className="app-content">
           <Suspense fallback={<LoadingScreen fullScreen />}>
             <Routes>
               {/* Public Routes */}
@@ -70,14 +68,6 @@ const App = () => {
                 }
               />
               <Route
-                path="/student"
-                element={
-                  <ProtectedRoute requiredRole="student">
-                    <StudentDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path="/settings"
                 element={
                   <ProtectedRoute>
@@ -93,8 +83,6 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-        </Container>
-      </Box>
     </ErrorBoundary>
     // <div>Hello</div>
   );

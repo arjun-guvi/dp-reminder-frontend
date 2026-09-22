@@ -1,14 +1,14 @@
 @use 'sass:color';
 
-// Variable overrides
-$primary-color: #0ea5e9;
-$secondary-color: #64748b;
-$success-color: #22c55e;
-$warning-color: #f59e0b;
-$danger-color: #ef4444;
-$background-color: #f8fafc;
-$text-color: #0f172a;
-$text-muted: #94a3b8;
+// Variable overrides - Clean two-color theme: Navy (#1e293b) and White (#ffffff)
+$primary-color: #1e293b; // Dark navy
+$secondary-color: #64748b; // Muted gray for secondary text
+$success-color: #1e293b; // Same navy (two-color theme)
+$warning-color: #1e293b; // Same navy
+$danger-color: #ef4444; // Keep red for danger/delete actions
+$background-color: #ffffff; // White background
+$text-color: #1e293b; // Navy text
+$text-muted: #64748b; // Muted text
 $border-radius: 8px;
 $transition-speed: 0.2s;
 
@@ -270,7 +270,7 @@ a {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e0f2fe;
+  border: 3px solid #e2e8f0;
   border-top-color: $primary-color;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

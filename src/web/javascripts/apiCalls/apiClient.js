@@ -39,10 +39,25 @@ apiClient.interceptors.response.use(
   (error) => {
     const { response } = error;
     
-    // Handle unauthorized response
+    // Handle unauthorized response (401)
     if (response?.status === HTTP_STATUS.UNAUTHORIZED) {
+      // Clear all auth data
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      localStorage.removeItem('user');
+      localStorage.removeItem('savedEmail');
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('token');
+      
+      // Redirect to login page
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/login' && currentPath !== '/signup' && currentPath !== '/forgot-password') {
+        window.location.href = '/login';
+      }
+    }
+    
+    // Handle forbidden response (403)
+    if (response?.status === HTTP_STATUS.FORBIDDEN) {
+      console.error('Access forbidden');
     }
     
     return Promise.reject(error);

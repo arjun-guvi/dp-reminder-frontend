@@ -3,13 +3,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #1e293b;
+  padding: 16px;
+  width: 100vw;
 
   &__paper {
     padding: 32px;
     width: 100%;
     max-width: 400px;
     border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    background: #fff;
   }
 
   &__header {
@@ -20,26 +24,53 @@
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
   }
 
   &__options {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 8px;
+  }
+
+  &__remember {
+    margin-right: auto;
   }
 
   &__submit {
     margin-top: 16px;
     padding: 12px;
+    font-weight: 600;
+    background-color: #1e293b !important;
+    &:hover {
+      background-color: #0f172a !important;
+    }
   }
 
   &__error {
     margin-top: 8px;
     text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #fef2f2;
+    color: #1e293b;
+    border: 1px solid #fecaca;
   }
 
   &__footer {
     text-align: center;
+    margin-top: 24px;
+  }
+
+  /* stylelint-disable-next-line media-feature-range-notation */
+  @media (width <=480px) {
+    &__paper {
+      padding: 24px;
+    }
+
+    &__header {
+      margin-bottom: 16px;
+    }
   }
 }

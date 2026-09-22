@@ -84,5 +84,66 @@ export const resetCommonData = () => ({
 // Logout action - clears auth data
 export const logout = () => (dispatch) => {
   localStorage.removeItem('authToken');
+  localStorage.removeItem('savedEmail');
+  localStorage.removeItem('rememberMe');
+  localStorage.removeItem('user');
   dispatch(resetCommonData());
+};
+
+// Async logout action with API call and toast notification
+export const performLogoutAction = (navigate, showNotification) => async (dispatch, getState) => {
+  try {
+    // Get token from state or localStorage
+    const state = getState();
+    const token = state?.commonData?.authToken || localStorage.getItem('authToken');
+    
+    if (token) {
+      // Import userApi to call logout endpoint
+      const { userApi } = require('../../apiCalls');
+      
+      // Call POST /auth/logout with Bearer token
+      await userApi.logout();
+    }
+    
+    // Clear all auth data from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('savedEmail');
+    localStorage.removeItem('rememberMe');
+    localStorage.removeItem('user');
+    
+    // Clear Redux state
+    dispatch(resetCommonData());
+    
+    // Show success notification
+    if (showNotification) {
+      showNotification('Successfully logged out', 'success');
+    }
+    
+    // Redirect to login page
+    if (navigate) {
+      navigate('/login');
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Logout error:', error);
+    
+    // Even if API fails, clear local data
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('savedEmail');
+    localStorage.removeItem('rememberMe');
+    localStorage.removeItem('user');
+    dispatch(resetCommonData());
+    
+    // Show error notification but still redirect
+    if (showNotification) {
+      showNotification('Logged out (server notification failed)', 'warning');
+    }
+    
+    if (navigate) {
+      navigate('/login');
+    }
+    
+    return { success: true };
+  }
 };

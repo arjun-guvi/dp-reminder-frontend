@@ -10,3 +10,4 @@ export { default as NoContentCard } from './noContentCard';
 export { default as ErrorBoundary } from './errorBoundary';
 export { default as ProtectedRoute } from './protectedRoute';
 export { default as PublicRoute } from './publicRoute';
+export { default as Navbar } from './navbar';

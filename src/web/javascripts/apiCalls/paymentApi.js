@@ -12,11 +12,15 @@ const getErrorMessage = (error) => (
 );
 
 export const paymentApi = {
-  listPending: async () => {
-    const response = await apiClient.get(PAYMENT_PATH, { params: { status: 'pending' } });
+  list: async (status = 'all') => {
+    const response = await apiClient.get(PAYMENT_PATH, {
+      params: status === 'all' ? {} : { status },
+    });
     const data = unwrap(response);
     return Array.isArray(data) ? data : data?.payments || [];
   },
+
+  listPending: async () => paymentApi.list('pending'),
 
   create: async (payment) => {
     const response = await apiClient.post(PAYMENT_PATH, payment);

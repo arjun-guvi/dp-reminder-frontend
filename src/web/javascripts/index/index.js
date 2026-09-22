@@ -20,31 +20,31 @@ import '../styles/global.scss';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0ea5e9',
+      main: '#0ea5e9', // Light blue
       light: '#38bdf8',
       dark: '#0369a1',
     },
     secondary: {
-      main: '#64748b',
+      main: '#64748b', // Muted gray
       light: '#94a3b8',
       dark: '#475569',
     },
     success: {
-      main: '#22c55e',
+      main: '#22c55e', // Green
     },
     warning: {
-      main: '#f59e0b',
+      main: '#f59e0b', // Amber
     },
     error: {
-      main: '#ef4444',
+      main: '#ef4444', // Red
     },
     background: {
-      default: '#f8fafc',
+      default: '#f0f9ff', // Light blue background
       paper: '#ffffff',
     },
     text: {
-      primary: '#0f172a',
-      secondary: '#64748b',
+      primary: '#0c4a6e', // Dark blue text
+      secondary: '#64748b', // Muted text
     },
   },
   typography: {

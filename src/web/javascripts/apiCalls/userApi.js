@@ -13,10 +13,16 @@ export const userApi = {
     return response.data;
   },
 
-  // Logout - placeholder implementation
+  // Logout
   logout: async () => {
-    const response = await apiClient.post(API_URLS.LOGOUT);
-    return response.data;
+    try {
+      const response = await apiClient.post(API_URLS.LOGOUT);
+      return response.data;
+    } catch (error) {
+      // Even if the server logout fails, we still want to clear local data
+      console.warn('Server logout failed:', error);
+      return { success: true };
+    }
   },
 
   // Forgot password - placeholder implementation
