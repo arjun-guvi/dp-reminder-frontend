@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+.env*.local
+.env
+.env.*.local
+.cache/
+coverage/
+.replit.nix

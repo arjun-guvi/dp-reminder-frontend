@@ -1,0 +1,5 @@
+run = "npm run build:prod && npm run serve"
+entrypoint = "server.js"
+
+[deployment]
+run = ["sh", "-c", "npm run build:prod && npm run serve"]

@@ -1,0 +1,13 @@
+// Common Data Action Types
+export const SET_AUTH_TOKEN = 'commonData/SET_AUTH_TOKEN';
+export const CLEAR_AUTH_TOKEN = 'commonData/CLEAR_AUTH_TOKEN';
+export const SET_USER = 'commonData/SET_USER';
+export const CLEAR_USER = 'commonData/CLEAR_USER';
+export const SET_ROLE = 'commonData/SET_ROLE';
+export const SET_PERMISSIONS = 'commonData/SET_PERMISSIONS';
+export const SET_SCREEN_LOADING = 'commonData/SET_SCREEN_LOADING';
+export const SET_SELECTED_ORGANIZATION = 'commonData/SET_SELECTED_ORGANIZATION';
+export const ADD_NOTIFICATION = 'commonData/ADD_NOTIFICATION';
+export const REMOVE_NOTIFICATION = 'commonData/REMOVE_NOTIFICATION';
+export const CLEAR_NOTIFICATIONS = 'commonData/CLEAR_NOTIFICATIONS';
+export const RESET_COMMON_DATA = 'commonData/RESET_COMMON_DATA';
